@@ -40,7 +40,7 @@ namespace CellularAutomatonTest1
 
 		public static async Task CAMain(){
 			var CellField = new CAField();
-			CellField.InitializeWithRumdom ();
+			CellField.InitializeWithRamdom ();
 			while(true){
 				foreach(var s in CellField){
 					int Num = CheckBlock (CellField, s);
@@ -158,7 +158,7 @@ namespace CellularAutomatonTest1
 			}
 		}
 
-		public void InitializeWithRumdom ()
+		public void InitializeWithRamdom ()
 		{
 			var rnd = new System.Random ();
 			for(var i = 0;_cellField.GetLength(0)>i;i++){
