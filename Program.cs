@@ -40,12 +40,22 @@ namespace CellularAutomatonTest1
 
 		public static async Task CAMain(){
 			var CellField = new CAField();
+			var NextField = new CAField ();
+
 			CellField.InitializeWithRamdom ();
+			var swatch = new System.Diagnostics.Stopwatch ();
 			while(true){
-				foreach(var s in CellField){
-					int Num = CheckBlock (CellField, s);
-					CellField [s.xAxis, s.yAxis, s.zAxis] = Num;
-				}
+				swatch.Start ();
+				await Task.Run(() => {
+					Parallel.ForEach (CellField, s => {
+						NextField [s.xAxis, s.yAxis, s.zAxis] = CheckBlock (CellField, s);
+					});
+				});
+				CellField = NextField.Copy();
+				swatch.Stop ();
+				Console.Write (swatch.ElapsedMilliseconds + " : ");
+				Console.WriteLine (CellField.Sum(x => x.Value) / (double)CAField.FieldSize * 100);
+				swatch.Reset ();
 			}
 
 
@@ -70,7 +80,7 @@ namespace CellularAutomatonTest1
 		static int CheckRule (int[] state)
 		{
 			var sum = state.Sum ();
-			if (sum > 5 & sum < 15)
+			if (sum > 5 & sum < 16)
 				return 1;
 			else
 				return 0;
@@ -85,9 +95,13 @@ namespace CellularAutomatonTest1
 	public class CAField : IEnumerable<ThirdDInt>
 	{
 
-		private static readonly int FieldMax = 500;
+		public static readonly int FieldMax = 100;
 
-		private int[,,] _cellField = new int[FieldMax,FieldMax,FieldMax];
+		public static long FieldSize{
+			get{return FieldMax * FieldMax * FieldMax;}
+		}
+
+		int[,,] _cellField = new int[FieldMax,FieldMax,FieldMax];
 
 		#region IEnumerable implementation
 
@@ -95,11 +109,18 @@ namespace CellularAutomatonTest1
 			get{
 				if (x < 0)
 					x = FieldMax + x;
+				else if (x >= FieldMax)
+					x = x - FieldMax;
 				if (y < 0)
 					y = FieldMax + y;
+				else if (y >= FieldMax)
+					y = y - FieldMax;
 				if (z < 0)
 					z = FieldMax + z;
+				else if (z >= FieldMax)
+					z = z - FieldMax;
 				return this._cellField[x,y,z];}
+			
 			set{this._cellField [x, y, z] = value;}
 		}
 //
@@ -164,10 +185,23 @@ namespace CellularAutomatonTest1
 			for(var i = 0;_cellField.GetLength(0)>i;i++){
 				for(var j = 0;_cellField.GetLength(1)>j;j++){
 					for(var k = 0;_cellField.GetLength(2)>k;k++){
-						_cellField [i, j, k] = rnd.Next(1);
+						_cellField [i, j, k] = rnd.Next() % 2;
+
 					}
 				}
 			}
+		}
+
+		public CAField Copy(){
+			var res = new CAField();
+			for(var i = 0;_cellField.GetLength(0)>i;i++){
+				for(var j = 0;_cellField.GetLength(1)>j;j++){
+					for(var k = 0;_cellField.GetLength(2)>k;k++){
+						res[i,j,k] =  _cellField [i, j, k];
+					}
+				}
+			}
+			return res;
 		}
 	}
 
@@ -209,6 +243,11 @@ namespace CellularAutomatonTest1
 			yAxis = y;
 			zAxis = z;
 			Value = val;
+		}
+
+		public override string ToString(){
+			var s = $"{this.xAxis.ToString()} , {this.yAxis} , {this.zAxis} : {this.Value}";
+			return s;
 		}
 
 		public static int operator+ (ThirdDInt a, ThirdDInt b){
