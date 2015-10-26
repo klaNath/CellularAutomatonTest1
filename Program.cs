@@ -26,7 +26,7 @@ using System.Collections.Generic;
 
 namespace CellularAutomatonTest1
 {
-	class MainClass
+	partial class MainClass
 	{
 
 		public static void Main (string[] args)
@@ -205,6 +205,63 @@ namespace CellularAutomatonTest1
 		}
 	}
 
+	public class FourthDInt:IComparable
+	{
+		#region IComparable implementation
+
+		public int CompareTo (object obj)
+		{
+			if (obj == null)
+			{
+				throw new NullReferenceException ();
+			}
+
+			if (this.GetType() != obj.GetType())
+			{
+				throw new ArgumentException("Type is not ThirdDInt", "obj");
+			}
+
+			return this.Value.CompareTo(((ThirdDInt)obj).Value);
+		}
+
+		#endregion
+
+		public int wAxis{ get; set;}
+		public int xAxis{get;set;}
+		public int yAxis{get;set;}
+		public int zAxis{get;set;}
+		public int Value{get;set;}
+
+		public FourthDInt(){
+			wAxis = 0;
+			xAxis = 0;
+			yAxis = 0;
+			zAxis = 0;
+			Value = 0;
+		}
+
+		public FourthDInt(int w, int x, int y, int z, int val){
+			wAxis = w;
+			xAxis = x;
+			yAxis = y;
+			zAxis = z;
+			Value = val;
+		}
+
+		public override string ToString(){
+			string s = $"{this.wAxis} , {this.xAxis} , {this.yAxis} , {this.zAxis} : {this.Value}";
+			return s;
+		}
+
+		public static int operator+ (FourthDInt a, FourthDInt b){
+			return a.Value + b.Value;
+		} 
+
+		public static int operator- (FourthDInt a, FourthDInt b){
+			return a.Value - b.Value;
+		} 
+	}
+
 	public class ThirdDInt:IComparable
 	{
 		#region IComparable implementation
@@ -246,7 +303,7 @@ namespace CellularAutomatonTest1
 		}
 
 		public override string ToString(){
-			var s = $"{this.xAxis.ToString()} , {this.yAxis} , {this.zAxis} : {this.Value}";
+			string s = $"{this.xAxis} , {this.yAxis} , {this.zAxis} : {this.Value}";
 			return s;
 		}
 
