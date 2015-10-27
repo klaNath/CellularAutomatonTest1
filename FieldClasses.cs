@@ -29,10 +29,10 @@ namespace CellularAutomatonTest1
 	public class CA4Field : IEnumerable<FourthDInt>
 	{
 
-		public static readonly int FieldMax = 50;
+		public static readonly int FieldMax = 20;
 
 		public static long FieldSize{
-			get{return FieldMax * FieldMax * FieldMax;}
+			get{return FieldMax * FieldMax * FieldMax * FieldMax;}
 		}
 
 		int[,,,] _cellField = new int[FieldMax,FieldMax,FieldMax,FieldMax];
@@ -68,6 +68,7 @@ namespace CellularAutomatonTest1
 				for(var j = 0;_cellField.GetLength(1)>j;j++){
 					for(var k = 0;_cellField.GetLength(2)>k;k++){
 						for(var l = 0;_cellField.GetLength(3)>l;l++){
+
 							yield return new FourthDInt(i,j,k,l,_cellField[i,j,k,l]);
 						}
 					}
