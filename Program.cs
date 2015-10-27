@@ -57,8 +57,6 @@ namespace CellularAutomatonTest1
 				Console.WriteLine (CellField.Sum(x => x.Value) / (double)CAField.FieldSize * 100);
 				swatch.Reset ();
 			}
-
-
 		}
 
 		static int CheckBlock (CAField cellField, ThirdDInt s)
@@ -73,7 +71,6 @@ namespace CellularAutomatonTest1
 				int _z = z + elm % 3 -1;
 				State [elm] = cellField [_x, _y, _z];
 			}
-
 			return CheckRule (State);
 		}
 
