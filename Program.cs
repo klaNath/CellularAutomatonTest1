@@ -67,7 +67,7 @@ namespace CellularAutomatonTest1
 			var x = s.xAxis;
 			var y = s.yAxis;
 			var z = s.zAxis;
-			var State = new int[81];
+			var State = new int[81];//State[39]が中心になるはず
 			foreach(var elm in Enumerable.Range(0,81)){
 				int _w = w + (elm / 27) % 3 - 1;
 				int _x = x + (elm / 9) % 3 - 1;
@@ -81,10 +81,17 @@ namespace CellularAutomatonTest1
 		static int CheckRule (int[] state)
 		{
 			var sum = state.Sum ();
-			if (sum > 16 & sum < 46)
+			if (sum > 16 & sum < 47)
 				return 1;
 			else
 				return 0;
+		}
+
+		static int CheckRuleProto(int[] state)
+		{
+			var SumMoore = state.Sum () - state[39];
+			var SumNeumann = state [38] + state [40] + state [36] + state [42] + state [30] + state [48] + state [12] + state [66];
+
 		}
 	}
 }
