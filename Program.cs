@@ -75,7 +75,7 @@ namespace CellularAutomatonTest1
 				int _z = z + (elm / 1) % 3 - 1;
 				State [elm] = cellField [_w, _x, _y, _z];
 			}
-			return CheckRule (State);
+			return CheckRuleProto (State);
 		}
 
 		static int CheckRule (int[] state)
@@ -91,7 +91,12 @@ namespace CellularAutomatonTest1
 		{
 			var SumMoore = state.Sum () - state[39];
 			var SumNeumann = state [38] + state [40] + state [36] + state [42] + state [30] + state [48] + state [12] + state [66];
-
+			if (SumNeumann <= 6 && SumNeumann >= 3)
+				return 1;
+			else if (SumMoore <= 50 && SumMoore >= 35)
+				return 1;
+			else
+				return 0;
 		}
 	}
 }
