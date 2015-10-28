@@ -39,8 +39,9 @@ namespace CellularAutomatonTest1
 		}
 
 		public static async Task CAMain(){
-			var CellField = new CAField();
-			var NextField = new CAField ();
+
+			var CellField = new CA4Field();
+			var NextField = new CA4Field ();
 
 			CellField.InitializeWithRamdom ();
 			var swatch = new System.Diagnostics.Stopwatch ();
@@ -48,42 +49,49 @@ namespace CellularAutomatonTest1
 				swatch.Start ();
 				await Task.Run(() => {
 					Parallel.ForEach (CellField, s => {
-						NextField [s.xAxis, s.yAxis, s.zAxis] = CheckBlock (CellField, s);
+						
+						NextField [s.wAxis, s.xAxis, s.yAxis, s.zAxis] = CheckBlock (CellField, s);
 					});
 				});
 				CellField = NextField.Copy();
 				swatch.Stop ();
 				Console.Write (swatch.ElapsedMilliseconds + " : ");
-				Console.WriteLine (CellField.Sum(x => x.Value) / (double)CAField.FieldSize * 100);
+				Console.WriteLine (CellField.Sum(x => x.Value) / (double)CA4Field.FieldSize * 100);
 				swatch.Reset ();
 			}
-
-
 		}
 
-		static int CheckBlock (CAField cellField, ThirdDInt s)
+		static int CheckBlock (CA4Field cellField, FourthDInt s)
 		{
+			var w = s.wAxis;
 			var x = s.xAxis;
 			var y = s.yAxis;
 			var z = s.zAxis;
-			var State = new int[27];
-			foreach(var elm in Enumerable.Range(0,27)){
-				int _x = x + elm / 9 -1 ;
-				int _y = y + (elm / 3) % 3 -1;
-				int _z = z + elm % 3 -1;
-				State [elm] = cellField [_x, _y, _z];
+			var State = new int[81];//State[39]が中心になるはず
+			foreach(var elm in Enumerable.Range(0,81)){
+				int _w = w + (elm / 27) % 3 - 1;
+				int _x = x + (elm / 9) % 3 - 1;
+				int _y = y + (elm / 3) % 3 - 1;
+				int _z = z + (elm / 1) % 3 - 1;
+				State [elm] = cellField [_w, _x, _y, _z];
 			}
-
 			return CheckRule (State);
 		}
 
 		static int CheckRule (int[] state)
 		{
 			var sum = state.Sum ();
-			if (sum > 5 & sum < 16)
+			if (sum > 16 & sum < 47)
 				return 1;
 			else
 				return 0;
+		}
+
+		static int CheckRuleProto(int[] state)
+		{
+			var SumMoore = state.Sum () - state[39];
+			var SumNeumann = state [38] + state [40] + state [36] + state [42] + state [30] + state [48] + state [12] + state [66];
+
 		}
 	}
 }
